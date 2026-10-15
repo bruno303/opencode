@@ -363,19 +363,15 @@ export function Autocomplete(props: {
         }
       }
       const mention = mentionFileSearch(base)
-      const result = await (
-        mention
-          ? client.api.file.find({
-              query: mention.fragment,
-              limit: 20,
-              location: requestLocation,
-              path: mention.path,
-            })
-          : client.api.file.find({ query: base, limit: 20, location: requestLocation })
-      ).then(
-        (result) => result,
-        () => undefined,
-      )
+      const request = mention
+        ? client.api.file.find({
+            query: mention.fragment,
+            limit: 20,
+            location: requestLocation,
+            path: mention.path,
+          })
+        : client.api.file.find({ query: base, limit: 20, location: requestLocation })
+      const result = await request.catch(() => undefined)
 
       if (!result)
         return info.value?.mode === input.visible

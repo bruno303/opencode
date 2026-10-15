@@ -64,10 +64,12 @@ export function mentionFileSearch(query: string) {
   const separator = query.lastIndexOf("/")
   // A trailing ".." segment targets the directory itself rather than
   // filtering, so it stays part of the base.
-  if (separator === -1 || query.slice(separator + 1) === "..")
-    return { path: query, prefix: query === "/" ? query : query + "/", fragment: "" }
-  const base = query.slice(0, separator) || "/"
-  return { path: base, prefix: base.endsWith("/") ? base : base + "/", fragment: query.slice(separator + 1) }
+  const base = separator === -1 || query.slice(separator + 1) === ".." ? query : query.slice(0, separator) || "/"
+  return {
+    path: base,
+    prefix: base.endsWith("/") ? base : base + "/",
+    fragment: base === query ? "" : query.slice(separator + 1),
+  }
 }
 
 export function directoryAutocompleteSearch(query: string, directory: string, home: string) {

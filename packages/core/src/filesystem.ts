@@ -174,6 +174,7 @@ const baseLayer = Layer.effect(
     }
     const findOutside = (input: FindInput, base: string, items: ReadonlyArray<FSUtil.DirEntry>) => {
       const fragment = input.query.trim()
+      const limit = input.limit ?? 50
       const home = Protected.isHome(base)
       const selected = items
         .filter(
@@ -187,9 +188,9 @@ const baseLayer = Layer.effect(
       if (!fragment)
         return selected
           .sort((a, b) => (a.type === b.type ? a.name.localeCompare(b.name) : a.type === "directory" ? -1 : 1))
-          .slice(0, input.limit ?? 50)
+          .slice(0, limit)
           .map((item) => outsideEntry(base, item))
-      const result = fuzzysort.go(fragment, selected, { key: "name", limit: input.limit ?? 50 })
+      const result = fuzzysort.go(fragment, selected, { key: "name", limit })
       fuzzysort.cleanup()
       return result.map((match) => outsideEntry(base, match.obj))
     }
